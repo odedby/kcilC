@@ -1,0 +1,27 @@
+{
+  "name": "caller_id",
+  "version": "1.0.0",
+  "description": "Identify caller by phone extention/name",
+  "main": "app.js",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "promise": "^8.0.1",
+    "redis": "^2.8.0",
+    "xml2js": "^0.4.19"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0",
+    "sinon": "^6.1.4"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "jest": {
+    "verbose": true,
+    "testURL": "http://localhost/"
+  },
+  "author": "Michael Svit",
+  "license": "ISC"
+}
