@@ -2,30 +2,13 @@ const express = require('express');
 const app = express();
 const dbFunctions = require('./db_functions');
 const scraper = require('./scraper');
-const host = process.env.REDIS_HOST || 'host.docker.internal';
-const port = 6379;
-const db = redis.createClient(port, host);
-const sub = redis.createClient(port, host);
-const initRedis = require('./initRedis');
-initRedis(db, sub, updateDb);
-updateDb(db);
 
-function updateDb(db) {
-	dbFunctions.resetScrapeKey(db).catch((ex) => {
-		console.log('Failed to reset scrape key: ' + ex);
-	});
-	scraper.parseXml('./data.xml')
-		.then((res) => {
-			return scraper.formatJson(res);
-		})
-		.then((res) => {
-			return dbFunctions.storeJson(db, res);
-		})
-		.then(() => console.log('Database update succeeded'))
-		.catch((err) => {
-			console.log('Error when storing person: ' + err);
-		});
-}
+import Redis from './database';
+
+const HOST = process.env.REDIS_HOST || 'host.docker.internal';
+const PORT = 6379;
+const SRC = '../data.xml';
+const db = new Redis(PORT, HOST, SRC, scraper);
 
 app.use(express.json());
 
