@@ -14,18 +14,26 @@ app.use(express.json());
 app.post('/getPersonByExt', (req, res) => {
 	let json = req.body;
 	db.getPersonByExt(json.ext, json.country).then(
-		(result) => res.send(result),
+		(result) => {
+			if (result) {
+				res.json(result);
+			} else {
+				res.status(404).json('User not found');
+			}
+		},
 		(ex) => {
 			console.log('Failed to retrieve person by extention: ' + ex);
+			res.status(500).send('Internal server error');
 		}
 	);
 });
 
 app.get('/getPersons', (req, res) => {
 	db.getPersons().then(
-		(result) => res.send(result),
+		(result) => res.json(result),
 		(ex) => {
 			console.log('Failed to retrieve person: ' + ex);
+			res.status(500).send('Internal server error');
 		}
 	);
 });
@@ -33,19 +41,25 @@ app.get('/getPersons', (req, res) => {
 app.get('/persons/:fullName', (req, res) => {
 	db.getPersonByName(req.params.fullName).then(
 		(result) => {
-			res.send(result);
+			if (result) {
+				res.json(result);
+			} else {
+				res.status(404).json('User not found');
+			}
 		},
 		(ex) => {
 			console.log('Failed to retrieve person by name: ' + ex);
+			res.status(500).send('Internal server error');
 		}
 	);
 });
 
 app.get('/stats', (req, res) => {
 	db.getStats().then(
-		(result) => res.send(result),
+		(result) => res.json(result),
 		(ex) => {
 			console.log('Failed to retrieve stats');
+			res.status(500).send('Internal server error');
 		}
 	);
 });
