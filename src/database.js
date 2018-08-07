@@ -4,7 +4,7 @@ const {promisify} = require('util');
 /**
  * Encapsulating class for Redis database functions.
  */
-export default class Redis {
+module.exports = class Redis {
 	/**
 	 * Constructor for a Redis object.
 	 * @param {int} port Redis server port.
@@ -17,7 +17,7 @@ export default class Redis {
 		this._host = host;
 		this._src = src;
 		this._scraper = scraper;
-		_init().then(() => _updateData());
+		this._init().then(() => this._updateData());
 	}
 
 	/**
@@ -27,13 +27,14 @@ export default class Redis {
 	 */
 	_init() {
 		this._client = redis.createClient(this._port, this._host);
-		this._hmset = promisify(db.hmset).bind(db);
-		this._set = promisify(db.set).bind(db);
-		this._zadd = promisify(db.zadd).bind(db);
-		this._hincrby = promisify(db.hincrby).bind(db);
-		this._hgetall = promisify(db.hgetall).bind(db);
-		this._zrange = promisify(db.zrange).bind(db);
-		this._expire = promisify(db.expire).bind(db);
+		this._hmset = promisify(this._client.hmset).bind(this._client);
+		this._set = promisify(this._client.set).bind(this._client);
+		this._get = promisify(this._client.get).bind(this._client);
+		this._zadd = promisify(this._client.zadd).bind(this._client);
+		this._hincrby = promisify(this._client.hincrby).bind(this._client);
+		this._hgetall = promisify(this._client.hgetall).bind(this._client);
+		this._zrange = promisify(this._client.zrange).bind(this._client);
+		this._expire = promisify(this._client.expire).bind(this._client);
 		const sub = redis.createClient(this._port, this._host);
 		const sendCommand = promisify(this._client.send_command).bind(this._client);
 		return sendCommand('config', ['set', 'notify-keyspace-events', 'Ex']).then(
@@ -43,7 +44,7 @@ export default class Redis {
 					console.log('Subscribed to "' + event + '" event channel: ' + res);
 					sub.on('message', (chn, msg) => {
 						if (msg == 'scrape') {
-							_updateData();
+							this._updateData();
 						}
 					});
 				});
@@ -57,13 +58,12 @@ export default class Redis {
 	 */
 	_updateData() {
 		return Promise.all([
-			_resetScrapeKey().catch((ex) => {
+			this._resetScrapeKey().catch((ex) => {
 				console.log('Failed to reset scrape trigger: ' + ex);
 			}),
 			this._scraper
-				.parseXml(this._src)
-				.then(this._scraper.formatJson)
-				.then(_storeJson)
+				.scrape(this._src)
+				.then((res) => this._storeJson(res))
 				.then(() => console.log('Database update succeeded'))
 				.catch((ex) => console.log('Failed to update database: ' + ex)),
 		]);
@@ -78,7 +78,7 @@ export default class Redis {
 		const VAL = 'scraping trigger';
 		const TIMEOUT_SEC = 3600;
 
-		return set(KEY, VAL).then(() => expire(KEY, TIMEOUT_SEC));
+		return this._set(KEY, VAL).then(() => this._expire(KEY, TIMEOUT_SEC));
 	}
 
 	/**
@@ -88,8 +88,8 @@ export default class Redis {
 	 * @return {Promise} Promise that represents contact JSON.
 	 */
 	getPersonByExt(ext, country) {
-		key = 'person:' + country.toLowerCase() + ':' + ext;
-		return hgetall(key);
+		const key = 'person:' + country.toLowerCase() + ':' + ext;
+		return this._hgetall(key);
 	}
 
 	/**
@@ -98,8 +98,8 @@ export default class Redis {
 	 * @return {Promise} Promise that represents contact JSON.
 	 */
 	getPersonByName(name) {
-		key = 'person:' + name.toLowerCase();
-		return get(key);
+		const key = 'person:' + name.toLowerCase();
+		return this._get(key);
 	}
 
 	/**
@@ -108,7 +108,7 @@ export default class Redis {
 	 * 					 all company employees.
 	 */
 	getPersons() {
-		return zrange('persons', 0, -1);
+		return this._zrange('persons', 0, -1);
 	}
 
 	/**
@@ -117,7 +117,7 @@ export default class Redis {
 	 * 					 employee count in every country.
 	 */
 	getStats() {
-		return hgetall('countries');
+		return this._hgetall('countries');
 	}
 
 	/**
@@ -126,9 +126,9 @@ export default class Redis {
 	 * @return {Promise} Promise that resolves when operation is done.
 	 */
 	_storeJson(json) {
-		promises = [];
+		const promises = [];
 		for (let person of json) {
-			promises.push(storePerson(person));
+			promises.push(this._storePerson(person));
 		}
 		return Promise.all(promises);
 	}
@@ -146,11 +146,13 @@ export default class Redis {
 		const personNameVal = `${person.country}:${person.ext}`;
 
 		return Promise.all([
-			hmset(personExtKey, person),
-			set(personNameKey, personNameVal),
-			zadd(personsKey, 0, person.fullName).then((res) => {
-				if (res === 1) hincrby(countriesKey, person.country.toLowerCase(), 1);
+			this._hmset(personExtKey, person),
+			this._set(personNameKey, personNameVal),
+			this._zadd(personsKey, 0, person.fullName).then((res) => {
+				if (res === 1) {
+					this._hincrby(countriesKey, person.country.toLowerCase(), 1);
+				}
 			}),
 		]);
 	}
-}
+};
