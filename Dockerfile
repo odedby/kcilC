@@ -2,10 +2,10 @@ FROM node:alpine
 
 WORKDIR /app
 
+ADD . /app
+
 RUN npm install
 
 EXPOSE 3000
-
-ADD . /app
 
 CMD ["node", "src/index.js"]
