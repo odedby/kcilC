@@ -1,5 +1,5 @@
 {
-  "name": "caller_id",
+  "name": "kcilC",
   "version": "1.0.0",
   "description": "Identify caller by phone extention/name",
   "main": "app.js",
@@ -16,7 +16,8 @@
     "eslint": "^5.3.0",
     "eslint-config-google": "^0.9.1",
     "mocha": "^5.2.0",
-    "sinon": "^6.1.4"
+    "sinon": "^6.1.4",
+    "supertest": "^3.1.0"
   },
   "scripts": {
     "test": "mocha"
