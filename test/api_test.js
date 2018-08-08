@@ -62,7 +62,7 @@ describe('API Test', () => {
 		});
 
 		describe('Get a non-existing user', () => {
-			it('should return status code 404, user not found', (done) => {
+			it('should return status code 404, "Contact not found"', (done) => {
 				let person = {
 					ext: 1234213,
 					country: 'israel',
@@ -72,7 +72,7 @@ describe('API Test', () => {
 					.send(person)
 					.expect('Content-Type', /json/)
 					.expect(404)
-					.expect('"User not found"')
+					.expect('"Contact not found"')
 					.end((err, res) => {
 						if (err) return done(err);
 						done();
@@ -142,19 +142,35 @@ describe('API Test', () => {
 	});
 
 	describe('GET /stats', () => {
-		it('should return count statistics for countries', (done) => {
-			request(server)
-				.get('/stats')
-				.expect('Content-Type', /json/)
-				.expect(200)
-				.end((err, res) => {
-					if (err) return done(err);
-					expect(res.body).to.deep.equal({
-						israel: '3',
-						wakanda: '1',
+		describe('Get existing user', () => {
+			it('should return count statistics for countries', (done) => {
+				request(server)
+					.get('/stats')
+					.expect('Content-Type', /json/)
+					.expect(200)
+					.end((err, res) => {
+						if (err) return done(err);
+						expect(res.body).to.deep.equal({
+							israel: '3',
+							wakanda: '1',
+						});
+						done();
 					});
-					done();
-				});
+			});
+		});
+
+		describe('Get a non-existing user', () => {
+			it('should return 404, "Contact not found"', (done) => {
+				request(server)
+					.get('/persons/nonexistingname')
+					.expect('Content-Type', /json/)
+					.expect(404)
+					.expect('"Contact not found"')
+					.end((err, res) => {
+						if (err) return done(err);
+						done();
+					});
+			});
 		});
 	});
 });

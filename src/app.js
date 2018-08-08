@@ -26,7 +26,7 @@ const configApp = () => {
 					if (result) {
 						res.json(result);
 					} else {
-						res.status(404).json('User not found');
+						res.status(404).json('Contact not found');
 					}
 				},
 				(ex) => {
@@ -52,7 +52,7 @@ const configApp = () => {
 					if (result) {
 						res.json(result);
 					} else {
-						res.status(404).json('User not found');
+						res.status(404).json('Contact not found');
 					}
 				},
 				(ex) => {
