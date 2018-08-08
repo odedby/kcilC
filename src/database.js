@@ -18,42 +18,64 @@ module.exports = class Redis {
 		this._host = host;
 		this._src = src;
 		this._scraper = scraper;
-		this._init()
-			.then(() => this._updateData())
-			.then(() => cb())
-			.catch((err) => cb(err));
 	}
 
 	/**
-	 * Initialize client object: create client and
+	 * Initialize redis connection: create client and
 	 * subscribe to expiry event of trigger key.
 	 * @return {Promise} Promise that resolves when init is done.
 	 */
-	_init() {
+	init() {
 		this._client = redis.createClient(this._port, this._host);
-		this._hmset = promisify(this._client.hmset).bind(this._client);
-		this._set = promisify(this._client.set).bind(this._client);
-		this._get = promisify(this._client.get).bind(this._client);
-		this._zadd = promisify(this._client.zadd).bind(this._client);
-		this._hincrby = promisify(this._client.hincrby).bind(this._client);
-		this._hgetall = promisify(this._client.hgetall).bind(this._client);
-		this._zrange = promisify(this._client.zrange).bind(this._client);
-		this._expire = promisify(this._client.expire).bind(this._client);
 		const sub = redis.createClient(this._port, this._host);
-		const sendCommand = promisify(this._client.send_command).bind(this._client);
-		return sendCommand('config', ['set', 'notify-keyspace-events', 'Ex']).then(
-			(res) => {
-				const event = '__keyevent@0__:expired';
-				sub.subscribe(event, () => {
-					console.log('Subscribed to "' + event + '" event channel: ' + res);
-					sub.on('message', (chn, msg) => {
-						if (msg == 'scrape') {
-							this._updateData();
-						}
-					});
+		return this._promisify()
+			.then(() =>
+				this._sendCommand('config', ['set', 'notify-keyspace-events', 'Ex'])
+			)
+			.then((res) => this._subscribeToExpiry(sub, res))
+			.then(() => this._updateData());
+	}
+
+	/**
+	 * Subscribe to scraping trigger expiration event.
+	 * @param {client} sub Client to subscribe with.
+	 * @param {string} res Response to notification request.
+	 * @return {Promise} Promise that resolves when done.
+	 */
+	_subscribeToExpiry(sub, res) {
+		return new Promise((fulfill, reject) => {
+			const event = '__keyevent@0__:expired';
+			sub.subscribe(event, () => {
+				console.log('Subscribed to "' + event + '" event channel: ' + res);
+				sub.on('message', (chn, msg) => {
+					if (msg == 'scrape') {
+						this._updateData();
+					}
 				});
-			}
-		);
+			});
+			fulfill();
+		});
+	}
+
+	/**
+	 * Promisify all required Redis methods.
+	 * @return {Promise} Promise that resolves when done.
+	 */
+	_promisify() {
+		return new Promise((fulfill, reject) => {
+			this._hmset = promisify(this._client.hmset).bind(this._client);
+			this._set = promisify(this._client.set).bind(this._client);
+			this._get = promisify(this._client.get).bind(this._client);
+			this._zadd = promisify(this._client.zadd).bind(this._client);
+			this._hincrby = promisify(this._client.hincrby).bind(this._client);
+			this._hgetall = promisify(this._client.hgetall).bind(this._client);
+			this._zrange = promisify(this._client.zrange).bind(this._client);
+			this._expire = promisify(this._client.expire).bind(this._client);
+			this._sendCommand = promisify(this._client.send_command).bind(
+				this._client
+			);
+			fulfill();
+		});
 	}
 
 	/**
