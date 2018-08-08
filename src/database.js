@@ -11,13 +11,17 @@ module.exports = class Redis {
 	 * @param {string} host Redis server host.
 	 * @param {string} src Data source to populate Redis with.
 	 * @param {object} scraper Scraper to parse data fetched from src.
+	 * @param {callback} cb Callback to execute when initialization is done.
 	 */
-	constructor(port, host, src, scraper) {
+	constructor(port, host, src, scraper, cb = () => {}) {
 		this._port = port;
 		this._host = host;
 		this._src = src;
 		this._scraper = scraper;
-		this._init().then(() => this._updateData());
+		this._init()
+			.then(() => this._updateData())
+			.then(() => cb())
+			.catch((err) => cb(err));
 	}
 
 	/**
