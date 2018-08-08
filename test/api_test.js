@@ -140,4 +140,21 @@ describe('API Test', () => {
 				});
 		});
 	});
+
+	describe('GET /stats', () => {
+		it('should return count statistics for countries', (done) => {
+			request(server)
+				.get('/stats')
+				.expect('Content-Type', /json/)
+				.expect(200)
+				.end((err, res) => {
+					if (err) return done(err);
+					expect(res.body).to.deep.equal({
+						israel: '3',
+						wakanda: '1',
+					});
+					done();
+				});
+		});
+	});
 });
