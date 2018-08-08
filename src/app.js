@@ -5,7 +5,7 @@ const Scraper = require('./scraper');
 
 const HOST = process.env.REDIS_HOST || 'host.docker.internal';
 const PORT = 6379;
-const SRC = './data.xml';
+const SRC = process.env.DATA_SRC || './data.xml';
 const scraper = new Scraper();
 const db = new Redis(PORT, HOST, SRC, scraper);
 
