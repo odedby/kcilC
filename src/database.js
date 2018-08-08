@@ -33,7 +33,16 @@ module.exports = class Redis {
 				this._sendCommand('config', ['set', 'notify-keyspace-events', 'Ex'])
 			)
 			.then((res) => this._subscribeToExpiry(sub, res))
+			.then(() => this._flushData())
 			.then(() => this._updateData());
+	}
+
+	/**
+	 * Flush data from Redis.
+	 * @return {Promise} Promise that resolves when done.
+	 */
+	_flushData() {
+		return this._flushall();
 	}
 
 	/**
@@ -74,6 +83,7 @@ module.exports = class Redis {
 			this._sendCommand = promisify(this._client.send_command).bind(
 				this._client
 			);
+			this._flushall = promisify(this._client.flushall).bind(this._client);
 			fulfill();
 		});
 	}
