@@ -9,6 +9,8 @@ const SRC = './data.xml';
 const scraper = new Scraper();
 const db = new Redis(PORT, HOST, SRC, scraper);
 
+const sendErr = () => res.status(500).send('Internal server error');
+
 app.use(express.json());
 
 app.post('/getPersonByExt', (req, res) => {
@@ -23,7 +25,7 @@ app.post('/getPersonByExt', (req, res) => {
 		},
 		(ex) => {
 			console.log('Failed to retrieve person by extention: ' + ex);
-			res.status(500).send('Internal server error');
+			sendErr(res);
 		}
 	);
 });
@@ -33,7 +35,7 @@ app.get('/getPersons', (req, res) => {
 		(result) => res.json(result),
 		(ex) => {
 			console.log('Failed to retrieve person: ' + ex);
-			res.status(500).send('Internal server error');
+			sendErr(res);
 		}
 	);
 });
@@ -49,7 +51,7 @@ app.get('/persons/:fullName', (req, res) => {
 		},
 		(ex) => {
 			console.log('Failed to retrieve person by name: ' + ex);
-			res.status(500).send('Internal server error');
+			sendErr(res);
 		}
 	);
 });
@@ -59,7 +61,7 @@ app.get('/stats', (req, res) => {
 		(result) => res.json(result),
 		(ex) => {
 			console.log('Failed to retrieve stats');
-			res.status(500).send('Internal server error');
+			sendErr(res);
 		}
 	);
 });
