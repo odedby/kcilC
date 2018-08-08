@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<viewentries timestamp="20180626T083156,68Z" toplevelentries="3">
+    <viewentry position="1" unid="1" noteid="1" siblings="1">
+        <entrydata columnnumber="0" name="c_name">
+            <text>Test Contact C</text>
+        </entrydata>
+        <entrydata columnnumber="1" name="Location">
+            <text>Israel</text>
+        </entrydata>
+        <entrydata columnnumber="2" name="c_country">
+            <text>Israel</text>
+        </entrydata>
+        <entrydata columnnumber="3" name="Department">
+            <text>This is a test</text>
+        </entrydata>
+        <entrydata columnnumber="4" name="c_ext">
+            <text>333</text>
+        </entrydata>
+        <entrydata columnnumber="5" name="c_phone">
+            <text>333333333</text>
+        </entrydata>
+        <entrydata columnnumber="6" name="c_phone_mobile">
+            <text>3333333333</text>
+        </entrydata>
+        <entrydata columnnumber="7" name="c_phone_mobile_per">
+            <text></text>
+        </entrydata>
+        <entrydata columnnumber="8" name="c_phone_home">
+            <text></text>
+        </entrydata>
+    </viewentry>
+    <viewentry position="2" unid="2" noteid="2" siblings="2">
+        <entrydata columnnumber="0" name="c_name">
+            <text>Test Contact A</text>
+        </entrydata>
+        <entrydata columnnumber="1" name="Location">
+            <text>Israel</text>
+        </entrydata>
+        <entrydata columnnumber="2" name="c_country">
+            <text>Israel</text>
+        </entrydata>
+        <entrydata columnnumber="3" name="Department">
+            <text>This is a test</text>
+        </entrydata>
+        <entrydata columnnumber="4" name="c_ext">
+            <text>111</text>
+        </entrydata>
+        <entrydata columnnumber="5" name="c_phone">
+            <text>111111111</text>
+        </entrydata>
+        <entrydata columnnumber="6" name="c_phone_mobile">
+            <text>1111111111</text>
+        </entrydata>
+        <entrydata columnnumber="7" name="c_phone_mobile_per">
+            <text></text>
+        </entrydata>
+        <entrydata columnnumber="8" name="c_phone_home">
+            <text></text>
+        </entrydata>
+    </viewentry>
+    <viewentry position="3" unid="3" noteid="3" siblings="3">
+        <entrydata columnnumber="0" name="c_name">
+            <text>Test Contact B</text>
+        </entrydata>
+        <entrydata columnnumber="1" name="Location">
+            <text>Israel</text>
+        </entrydata>
+        <entrydata columnnumber="2" name="c_country">
+            <text>Israel</text>
+        </entrydata>
+        <entrydata columnnumber="3" name="Department">
+            <text>This is a test</text>
+        </entrydata>
+        <entrydata columnnumber="4" name="c_ext">
+            <text>222</text>
+        </entrydata>
+        <entrydata columnnumber="5" name="c_phone">
+            <text>222222222</text>
+        </entrydata>
+        <entrydata columnnumber="6" name="c_phone_mobile">
+            <text>2222222222</text>
+        </entrydata>
+        <entrydata columnnumber="7" name="c_phone_mobile_per">
+            <text></text>
+        </entrydata>
+        <entrydata columnnumber="8" name="c_phone_home">
+            <text></text>
+        </entrydata>
+    </viewentry>
+    <viewentry position="4" unid="4" noteid="4" siblings="4">
+        <entrydata columnnumber="0" name="c_name">
+            <text>Test Contact D</text>
+        </entrydata>
+        <entrydata columnnumber="1" name="Location">
+            <text></text>
+        </entrydata>
+        <entrydata columnnumber="2" name="c_country">
+            <text>Wakanda</text>
+        </entrydata>
+        <entrydata columnnumber="3" name="Department">
+            <text>This is a test</text>
+        </entrydata>
+        <entrydata columnnumber="4" name="c_ext">
+            <text>222</text>
+        </entrydata>
+        <entrydata columnnumber="5" name="c_phone">
+            <text></text>
+        </entrydata>
+        <entrydata columnnumber="6" name="c_phone_mobile">
+            <text></text>
+        </entrydata>
+        <entrydata columnnumber="7" name="c_phone_mobile_per">
+            <text></text>
+        </entrydata>
+        <entrydata columnnumber="8" name="c_phone_home">
+            <text></text>
+        </entrydata>
+    </viewentry>
+</viewentries>
